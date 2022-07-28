@@ -2,6 +2,7 @@ const packageJson = require('./package')
 const id = packageJson.name.replace(/[-@/]/g, '_')
 const {name, description} = packageJson
 
+const schema = {};
 module.exports = function (app) {
   const onStop = []
   let state = 'initial state'
@@ -10,7 +11,7 @@ module.exports = function (app) {
     state = `yes, I'm started`
     let interval = setInterval(() => {
       app.debug('Running ', new Date())
-    }, 5000)
+    }, 25000)
     onStop.push(() => clearInterval(interval))
   }
 
@@ -29,7 +30,7 @@ module.exports = function (app) {
 
   function registerWithRouter(router) {
     router.get('/doit', (req, res, next) => {
-      app.debug('Handling request', req)
+      app.debug('Handling request :', req.baseUrl, req.body)
       res.json({
         message: 'Got it!',
         state, 
