@@ -1,6 +1,9 @@
 const packageJson = require('./package')
 const id = packageJson.name.replace(/[-@/]/g, '_')
-const {name, description} = packageJson
+const {
+  name,
+  description
+} = packageJson
 
 const schema = {};
 module.exports = function (app) {
@@ -28,14 +31,32 @@ module.exports = function (app) {
 
   const schema = {}
 
+  const flatten = (obj, prefix = [], current = {}) => {
+    if (typeof (obj) === 'object' && obj !== null) {
+      for (const key of Object.keys(obj)) {
+        flatten(obj[key], prefix.concat(key), current)
+      }
+    } else {
+      current[prefix.join('.')] = obj
+    }
+    return current
+  }
+
+  // sk-sensorlogger Handling value : {
+  //   'self.sensorlogger.magnetometer.z': 0,
+  //   'self.sensorlogger.magnetometer.y': 0,
+  //   'self.sensorlogger.magnetometer.x': 0
+  // } +0ms
+
   function registerWithRouter(router) {
-    router.get('/doit', (req, res, next) => {
-      app.debug('Handling request :', req.baseUrl, req.body)
-      res.json({
-        message: 'Got it!',
-        state, 
-        timestamp: new Date().toISOString()
-      })
+    app.post('/sensorlogger', (req, res) => {
+      app.debug("body=", req.body)
+      req.body.payload.forEach(
+        function (v) {
+          app.debug('Handling value :', flatten(v.values, ['self', 'sensorlogger', v.name], {}))
+        })
+      //app.handleMessage('sensorlogger', createDelta(req.body))
+      res.sendStatus(200);
     })
   }
 
@@ -48,4 +69,24 @@ module.exports = function (app) {
     schema,
     registerWithRouter
   }
+
+
+
+  // const createDelta = (data) => {
+  //   var v = {
+  //     updates: [{
+  //       '$source': 'sensorlogger.' + data.deviceId,
+  //       values: []
+  //     }]
+  //   }
+  //   for
+  // return {
+  //   updates: [{
+  //     '$source': 'sensorlogger.' + data.deviceId,
+  //     values: [{
+  //       path: `environment.${data.location}.${humidityKey}`,
+  //       value: _.round(data.humidity, 2)
+  //     }]
+  //   }]
+  // }
 }
