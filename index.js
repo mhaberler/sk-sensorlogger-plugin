@@ -31,31 +31,35 @@ module.exports = function (app) {
 
   const schema = {}
 
-  const flatten = (obj, prefix = [], current = {}) => {
+  const flatten = (obj, prefix = [], current = []) => {
     if (typeof (obj) === 'object' && obj !== null) {
       for (const key of Object.keys(obj)) {
         flatten(obj[key], prefix.concat(key), current)
       }
     } else {
-      current[prefix.join('.')] = obj
+      current.push({
+        path: prefix.join('.'),
+        value: obj
+      })
+      // current[prefix.join('.')] = obj
     }
     return current
   }
 
-  // sk-sensorlogger Handling value : {
-  //   'self.sensorlogger.magnetometer.z': 0,
-  //   'self.sensorlogger.magnetometer.y': 0,
-  //   'self.sensorlogger.magnetometer.x': 0
-  // } +0ms
 
   function registerWithRouter(router) {
     app.post('/sensorlogger', (req, res) => {
-      app.debug("body=", req.body)
-      req.body.payload.forEach(
-        function (v) {
-          app.debug('Handling value :', flatten(v.values, ['self', 'sensorlogger', v.name], {}))
-        })
-      //app.handleMessage('sensorlogger', createDelta(req.body))
+      //app.debug("body=", req.body)
+      let u = []
+      req.body.payload.map(v => flatten(v.values, ['self', 'sensorlogger', v.name], u));
+      let updates = {
+        updates: [{
+          '$source': 'sensorlogger.' + req.body.deviceId,
+          values: u
+        }]
+      }
+      app.handleMessage('sensorlogger', updates)
+      app.debug('updates :', updates);
       res.sendStatus(200);
     })
   }
@@ -90,3 +94,6 @@ module.exports = function (app) {
   //   }]
   // }
 }
+
+
+
