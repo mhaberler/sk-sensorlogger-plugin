@@ -49,7 +49,6 @@ module.exports = function (app) {
 
   function registerWithRouter(router) {
     app.post('/sensorlogger', (req, res) => {
-      //app.debug("body=", req.body)
       let u = []
       req.body.payload.map(v => flatten(v.values, ['self', 'sensorlogger', v.name], u));
       let updates = {
@@ -59,7 +58,7 @@ module.exports = function (app) {
         }]
       }
       app.handleMessage('sensorlogger', updates)
-      app.debug('updates :', updates);
+      // app.debug('updates :', updates);
       res.sendStatus(200);
     })
   }
@@ -73,27 +72,4 @@ module.exports = function (app) {
     schema,
     registerWithRouter
   }
-
-
-
-  // const createDelta = (data) => {
-  //   var v = {
-  //     updates: [{
-  //       '$source': 'sensorlogger.' + data.deviceId,
-  //       values: []
-  //     }]
-  //   }
-  //   for
-  // return {
-  //   updates: [{
-  //     '$source': 'sensorlogger.' + data.deviceId,
-  //     values: [{
-  //       path: `environment.${data.location}.${humidityKey}`,
-  //       value: _.round(data.humidity, 2)
-  //     }]
-  //   }]
-  // }
 }
-
-
-
