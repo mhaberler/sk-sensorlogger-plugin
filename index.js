@@ -7,17 +7,31 @@ module.exports = function (app) {
   plugin.schema = {
     type: 'object',
     properties: {
-      path: {
-        type: 'string',
-        title: 'SignalK Path',
-        description: 'This is used to build the path in Signal K.',
-        default: 'environment.sensorlogger'
+      //   multipleParametersArray: {
+      uuidParams: {
+        type: "array",
+        title: "Phone UUID to path map",
+        items: {
+          type: "object",
+          required: [
+            "uuid",
+            "path"
+          ],
+          properties: {
+            uuid: {
+              type: "string",
+              title: "phone uuid",
+              default: ""
+            },
+            path: {
+              type: "string",
+              title: "path",
+              default: "myPhone"
+            }
+          }
+        }
       }
     }
-  }
-  plugin.devices = {
-    "99dac4cb-d27e-4319-9e0e-5f9067ead1d7": "environment.ios",
-    "1d6b3d72-643c-433c-b622-2a62cfbe7afe": "environment.android"
   }
 
   plugin.start = function (config) {
@@ -55,7 +69,8 @@ module.exports = function (app) {
           timestamp: Date(v.time / 1e6),
           values: []
         }
-        let device = plugin.devices[req.body.deviceId] || 'sensorlogger';
+        let cfg = plugin.config.uuidParams.find(e => e.uuid === req.body.deviceId)
+        let device = cfg.path || 'sensorlogger';
         flatten(v.values, [device, v.name], u.values)
         updates.updates.push(u)
       });
