@@ -1,35 +1,30 @@
-const packageJson = require('./package')
-const id = packageJson.name.replace(/[-@/]/g, '_')
-const {
-  name,
-  description
-} = packageJson
-
-const schema = {};
 module.exports = function (app) {
-  const onStop = []
-  let state = 'initial state'
+  let plugin = {}
 
-  function start(configuration) {
-    state = `yes, I'm started`
-    let interval = setInterval(() => {
-      app.debug('Running ', new Date())
-    }, 25000)
-    onStop.push(() => clearInterval(interval))
-  }
+  plugin.id = 'sk-sensorlogger'
+  plugin.name = 'Sensorlogger HTTP listener'
+  plugin.description = 'reads Sensorlogger values into SignalK'
 
-  function stop() {
-    onStop.forEach((f) => {
-      try {
-        f()
-      } catch (e) {
-        app.error(e)
+  plugin.schema = {
+    type: 'object',
+    properties: {
+      path: {
+        type: 'string',
+        title: 'SignalK Path',
+        description: 'This is used to build the path in Signal K.',
+        default: 'environment.sensorlogger'
       }
-    })
-    state = `now I'm stopped`
+    }
   }
 
-  const schema = {}
+  plugin.start = function (config) {
+    plugin.config = config
+    app.debug(plugin.id, 'start', new Date(), config)
+  }
+
+  plugin.stop = function () {
+    app.debug(plugin.id, 'stop', new Date())
+  }
 
   const flatten = (obj, prefix = [], current = []) => {
     if (typeof (obj) === 'object' && obj !== null) {
@@ -41,35 +36,31 @@ module.exports = function (app) {
         path: prefix.join('.'),
         value: obj
       })
-      // current[prefix.join('.')] = obj
     }
     return current
   }
 
-
-  function registerWithRouter(router) {
+  plugin.registerWithRouter = function (router) {
     app.post('/sensorlogger', (req, res) => {
-      let u = []
-      req.body.payload.map(v => flatten(v.values, ['self', 'sensorlogger', v.name], u));
       let updates = {
-        updates: [{
-          '$source': 'sensorlogger.' + req.body.deviceId,
-          values: u
-        }]
+        context: 'vessels.' + app.selfId,
+        updates: []
       }
-      app.handleMessage('sensorlogger', updates)
-      // app.debug('updates :', updates);
+      req.body.payload.map(v => {
+        console.log(v.name)
+        let u = {
+          '$source': plugin.id + '.' + req.body.deviceId,
+          timestamp: Date(v.time / 1e6),
+          values: []
+        }
+        flatten(v.values, ['sensorlogger', v.name], u.values)
+        updates.updates.push(u)
+      });
+      app.debug(plugin.id, updates)
+      app.handleMessage(plugin.id, updates)
       res.sendStatus(200);
     })
   }
 
-  return {
-    id,
-    name,
-    description,
-    start,
-    stop,
-    schema,
-    registerWithRouter
-  }
+  return plugin
 }
