@@ -2,7 +2,7 @@
 
 This SignalK plugin defines a HTTP endpoint for
 [free sensorlogger mobile app for iOS and Android](https://www.tszheichoi.com/sensorlogger) 
-to push selected sensor readings into the [SignalK server)[https://github.com/SignalK/signalk-server].
+to push selected sensor readings into the [SignalK server](https://github.com/SignalK/signalk-server).
 
 Example iOS sensorlogger setup:
 
