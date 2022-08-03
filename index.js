@@ -4,7 +4,6 @@ module.exports = function (app) {
   plugin.id = 'sk-sensorlogger'
   plugin.name = 'Sensorlogger HTTP listener'
   plugin.description = 'reads Sensorlogger values into SignalK'
-
   plugin.schema = {
     type: 'object',
     properties: {
