@@ -50,7 +50,6 @@ module.exports = function (app) {
         updates: []
       }
       req.body.payload.map(v => {
-        console.log(v.name)
         let u = {
           '$source': plugin.id,
           timestamp: Date(v.time / 1e6),
