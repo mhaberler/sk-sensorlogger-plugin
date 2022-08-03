@@ -15,6 +15,10 @@ module.exports = function (app) {
       }
     }
   }
+  plugin.devices = {
+    "99dac4cb-d27e-4319-9e0e-5f9067ead1d7": "environment.ios",
+    "1d6b3d72-643c-433c-b622-2a62cfbe7afe": "environment.android"
+  }
 
   plugin.start = function (config) {
     plugin.config = config
@@ -48,11 +52,12 @@ module.exports = function (app) {
       req.body.payload.map(v => {
         console.log(v.name)
         let u = {
-          '$source': plugin.id + '.' + req.body.deviceId,
+          '$source': plugin.id,
           timestamp: Date(v.time / 1e6),
           values: []
         }
-        flatten(v.values, ['sensorlogger', v.name], u.values)
+        let device = plugin.devices[req.body.deviceId] || 'sensorlogger';
+        flatten(v.values, [device, v.name], u.values)
         updates.updates.push(u)
       });
       app.debug(plugin.id, updates)
