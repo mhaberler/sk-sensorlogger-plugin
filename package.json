@@ -1,14 +1,13 @@
 {
   "name": "sk-sensorlogger",
   "version": "1.0.0",
-  "description": "plugin to feed sensorlogger POST requests into skI",
+  "description": "plugin to feed sensorlogger POST requests into sk",
   "repository": "github:mhaberler/sk-sensorlogger-plugin",
   "main": "index.js",
   "keywords": [
     "signalk-node-server-plugin"
   ],
-  "author": "Teppo Kurki <teppo.kurki@iki.fi>",
-
+  "author": "Michael Haberler <haberlerm@gmail.com>",
   "license": "Apache-2.0",
   "dependencies": {}
 }
