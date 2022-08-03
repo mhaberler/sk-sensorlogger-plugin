@@ -21,6 +21,19 @@ For the push URL, use:
 
 Tap the `Tap to Test Pushing` button. The return code should be a 200.
 
+# Plugin installation
+
+Until I figure out npmjs.org, proceed as follows:
+
+```
+    git clone https://github.com/mhaberler/sk-sensorlogger-plugin.git 
+    cd sk-sensorlogger-plugin
+    npm link
+    cd /home/<username>/.signalk  # or wherever your .signalk directory lives
+    npm link sk-sensorlogger-plugin
+```
+Restart the server.
+
 # Plugin Configuration
 
 By default, the samples by any sensorlogger client will be recorded under `environment.sensorlogger.<sensor>.key`.
