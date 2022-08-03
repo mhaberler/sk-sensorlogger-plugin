@@ -6,11 +6,11 @@ to push selected sensor readings into the [SignalK server)[https://github.com/Si
 
 Example iOS sensorlogger setup:
 
-[sensorlogger setup](mhaberler.github.com/sk-sensorlogger-plugin/img/sensorlogger.jpg)
+[sensorlogger setup](img/sensorlogger.jpg)
 
 Result in SignalK:
 
-[data browser](mhaberler.github.com/sk-sensorlogger-plugin/img/sk.png)
+[data browser](img/sk.png)
 
 This code is a rough first cut and currently provided no means for authentication and bypasses 
 the SignalK authentication mechanism.
