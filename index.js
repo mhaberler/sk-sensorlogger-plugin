@@ -7,8 +7,7 @@ module.exports = function (app) {
   plugin.schema = {
     type: 'object',
     properties: {
-      //   multipleParametersArray: {
-      uuidParams: {
+        uuidParams: {
         type: "array",
         title: "Phone UUID to path map",
         items: {

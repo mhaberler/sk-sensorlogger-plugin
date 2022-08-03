@@ -58,5 +58,7 @@ https://github.com/tszheichoi/awesome-sensor-logger/
 
 # Bugs
 
+This currently only runs with a server with authentication turned off until I figure how to route a POST past sk's auth mechanism.
+
 This code currently provides no means for authentication and bypasses 
 the SignalK authentication mechanism.
