@@ -36,7 +36,7 @@ Restart the server.
 
 # Plugin Configuration
 
-By default, the samples by any sensorlogger client will be recorded under `environment.sensorlogger.<sensor>.key`.
+By default, the samples by any sensorlogger client will be recorded under `environment.sensorlogger.<sensor>.`.
 However, each push message conveys the phone's UUID. These UUID's can be used to route sensor samples by different phones to different SignalK paths.
 
 To do so:
