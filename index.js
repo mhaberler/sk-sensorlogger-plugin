@@ -63,7 +63,12 @@ module.exports = function (app) {
         context: 'vessels.' + app.selfId,
         updates: []
       }
-      app.debug( "device uuid: ", req.body.deviceId)
+
+      if (req.body.payload[0].name === 'test') {
+        app.debug("test push from device with the following uuid detected: ", req.body.deviceId)
+        res.sendStatus(200);
+        return
+      }
       req.body.payload.map(v => {
         let u = {
           '$source': plugin.id,
