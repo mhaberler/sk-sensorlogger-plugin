@@ -63,6 +63,7 @@ module.exports = function (app) {
         context: 'vessels.' + app.selfId,
         updates: []
       }
+      app.debug( "device uuid: ", req.body.deviceId)
       req.body.payload.map(v => {
         let u = {
           '$source': plugin.id,
@@ -70,11 +71,10 @@ module.exports = function (app) {
           values: []
         }
         let cfg = plugin.config.uuidParams.find(e => e.uuid === req.body.deviceId)
-        let device = cfg.path || 'sensorlogger';
+        let device = cfg.path || 'environment.sensorlogger';
         flatten(v.values, [device, v.name], u.values)
         updates.updates.push(u)
       });
-      app.debug(plugin.id, updates)
       app.handleMessage(plugin.id, updates)
       res.sendStatus(200);
     })
